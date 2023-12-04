@@ -22,14 +22,16 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Password Page'),
+        title: Text('Password Change'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Image.asset("assets/images/p.png"),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
               obscureText: !_passwordVisible,

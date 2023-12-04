@@ -2,6 +2,7 @@ import 'package:firebase_auth_all_feature/bloc/auth.event.dart';
 import 'package:firebase_auth_all_feature/bloc/auth_bloc.dart';
 import 'package:firebase_auth_all_feature/bloc/auth_state.dart';
 import 'package:firebase_auth_all_feature/view/password_view.dart';
+import 'package:firebase_auth_all_feature/widgets/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -23,6 +24,10 @@ class _OtpVerifyViewState extends State<OtpVerifyView> {
         ),
         body: Column(
           children: [
+            Image.asset("assets/images/p.png"),
+            const SizedBox(height: 16.0),
+            const Welcome(),
+            const SizedBox(height: 26.0),
             PinCodeTextField(
               appContext: context,
               length: 6,

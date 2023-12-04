@@ -113,7 +113,7 @@ class _SignInViewState extends State<SignInView> {
                         context.read<AuthBloc>().add(LoginWithEmailPassword(
                             _emailController.text, _passwordController.text));
                       },
-                      child: Text('Login with Username/Password'),
+                      child: Text('Continue'),
                     );
                   }
                 },

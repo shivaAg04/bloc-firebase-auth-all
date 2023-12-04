@@ -7,6 +7,7 @@ import 'package:firebase_auth_all_feature/bloc/auth_state.dart';
 import 'package:firebase_auth_all_feature/view/home_view.dart';
 import 'package:firebase_auth_all_feature/view/sign_in_view.dart';
 import 'package:firebase_auth_all_feature/view/username_view.dart';
+import 'package:firebase_auth_all_feature/widgets/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sign_in_button/sign_in_button.dart';
@@ -47,35 +48,7 @@ class _SignUpViewState extends State<SignUpView> {
             children: [
               Image.asset("assets/images/p.png"),
               const SizedBox(height: 16.0),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Welcome TO",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    " Poll",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.purple),
-                  ),
-                  Text(
-                    "Pe.",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange),
-                  ),
-                ],
-              ),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "                                     #EarnKarBefikar",
-                    style: TextStyle(color: Colors.grey),
-                  )),
+              const Welcome(),
               const SizedBox(height: 26.0),
               SizedBox(
                 height: 50,
