@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 class UserModel {
   String? firstName;
   String? lastName;
@@ -6,6 +8,7 @@ class UserModel {
   String? email;
   String? password;
   String? verificationId;
+  AuthCredential? googleAuthCredential;
   UserModel(
       {this.firstName,
       this.lastName,
@@ -13,5 +16,6 @@ class UserModel {
       this.phone,
       this.email,
       this.password,
-      this.verificationId});
+      this.verificationId,
+      this.googleAuthCredential});
 }

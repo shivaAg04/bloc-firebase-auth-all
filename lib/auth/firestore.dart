@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth_all_feature/auth/api.dart';
 
@@ -98,5 +100,50 @@ class FirebaseCloudStoreService {
     } catch (e) {
       print('Error getting user data: $e');
     }
+  }
+
+  // get email from username/phone/email
+
+  static Future<String?> getEmail(String username) async {
+    String? email;
+    await checkUsernameExist(username).then((value) async {
+      if (value) {
+        await _firestore.collection('userid').doc(username).get().then((value) {
+          final data = value.data();
+          print(data!['email']);
+          email = data['email'];
+        });
+      } else {
+        await checkPhoneNumberExist(username).then((value) async {
+          if (value) {
+            await _firestore
+                .collection('phone')
+                .doc(username)
+                .get()
+                .then((value) {
+              final data = value.data();
+              print(data!['email']);
+              email = data['email'];
+            });
+          } else {
+            await checkEmailExist(username).then((value) async {
+              if (value) {
+                await _firestore
+                    .collection('email')
+                    .doc(username)
+                    .get()
+                    .then((value) {
+                  final data = value.data();
+                  print(data!['email']);
+                  email = data['email'];
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+
+    return email;
   }
 }

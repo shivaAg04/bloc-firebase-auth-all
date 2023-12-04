@@ -10,18 +10,22 @@ class HomeView extends StatelessWidget {
         appBar: AppBar(
           title: const Text('HomeView'),
         ),
-        body: Center(
-          child: ElevatedButton(
-              child: const Text('Logout'),
-              onPressed: () {
-                AuthService.signOut().then((value) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeView(),
-                    ),
-                  );
-                });
-              }),
+        body: Column(
+          children: [
+            Center(
+              child: ElevatedButton(
+                  child: const Text('Logout'),
+                  onPressed: () async {
+                    await AuthService.signOut().then((value) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const HomeView(),
+                        ),
+                      );
+                    });
+                  }),
+            ),
+          ],
         ));
   }
 }

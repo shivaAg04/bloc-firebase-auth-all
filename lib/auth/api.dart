@@ -10,7 +10,7 @@ class AuthService {
   static final GoogleSignIn _googleSignIn = GoogleSignIn();
   static User? get currentUser => _auth.currentUser;
   static final UserModel userModel = UserModel();
-
+  // signup with email and password
   static Future<UserCredential?> signUpWithEmailPassword(
       String emailAddress, String password) async {
     try {
@@ -18,6 +18,8 @@ class AuthService {
         email: emailAddress,
         password: password,
       );
+      await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(userModel.googleAuthCredential!);
 
       print("////////////");
       print(credential.user!.email);
@@ -39,30 +41,27 @@ class AuthService {
   }
 
   /// Sign in with email and password
-  static Future<UserCredential?> signInWithEmailPassword(
+  static Future<void> signInWithEmailPassword(
       String emailAddress, String password) async {
     try {
-      final credential = await _auth.createUserWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: emailAddress,
         password: password,
       );
-
-      return credential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
-        // Handle the case of a user not found
-      } else if (e.code == 'wrong-password') {
+        // Handle the case of a user not found.
+      } else if (e.code == 'invalid-credential') {
         print('Wrong password provided for that user.');
-        // Handle the case of a wrong password
+        throw Exception("Error");
+        // Handle the case of a wrong password.
       }
-      // You can add more specific error handling if needed
     } catch (e) {
-      print(e);
+      print(e.toString());
+      throw Exception("Error");
       // General error handling
     }
-    // Return null or handle as needed in your application logic
-    return null;
   }
 
   //google sign in
@@ -75,24 +74,28 @@ class AuthService {
       if (googleSignInAccount != null) {
         final isEmailExist = await FirebaseCloudStoreService.checkEmailExist(
             googleSignInAccount.email);
+
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        // Authenticate with Firebase using Google Sign-In credentials
+
+        final AuthCredential googleAuthCredential =
+            GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
         if (isEmailExist) {
           //if email exist<old user> then sign in with google
 
-          final GoogleSignInAuthentication googleSignInAuthentication =
-              await googleSignInAccount.authentication;
-
-          // Authenticate with Firebase using Google Sign-In credentials
-
-          final OAuthCredential googleAuthCredential =
-              GoogleAuthProvider.credential(
-            accessToken: googleSignInAuthentication.accessToken,
-            idToken: googleSignInAuthentication.idToken,
-          );
           UserCredential us =
               await _auth.signInWithCredential(googleAuthCredential);
           return us;
         } else {
           ///////if email not exist<New USER> then move to the next screen for more information/////////////
+
+          userModel.googleAuthCredential = googleAuthCredential;
           userModel.email = googleSignInAccount.email;
           final fullName = googleSignInAccount.displayName!.split(" ");
           userModel.firstName = fullName[0];
@@ -157,8 +160,12 @@ class AuthService {
 
   //////Sign out Function////////////////////
   static Future<void> signOut() async {
-    await _googleSignIn.disconnect().then((value) {
-      _auth.signOut();
-    });
+    if (_googleSignIn.currentUser != null) {
+      await _googleSignIn.disconnect().then((value) async {
+        await _auth.signOut();
+      });
+    } else {
+      await _auth.signOut();
+    }
   }
 }

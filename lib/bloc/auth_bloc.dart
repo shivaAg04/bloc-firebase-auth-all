@@ -15,9 +15,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CheckPhoneNumberExist>(_checkPhoneNumberExist);
     on<VerifyOtp>(_verifyOtp);
     on<PasswordSubmit>(_passwordSubmit);
+    on<LoginWithEmailPassword>(_loginWithEmailPassword);
 
     add(CheckAuth());
   }
+// login with email/username/phone and password
+
+  Future<void> _loginWithEmailPassword(
+      LoginWithEmailPassword event, Emitter<AuthState> emit) async {
+    try {
+      emit(LoginLoading());
+      await FirebaseCloudStoreService.getEmail(event.email).then((value) async {
+        if (value != null) {
+          //email exist
+          await AuthService.signInWithEmailPassword(value, event.password)
+              .then((value) {
+            //login success
+            emit(LoginSuccess());
+          }).onError((error, stackTrace) {
+            emit(PasswordWrong());
+          });
+        } else {
+          //email not exist
+          emit(UserNotFound());
+        }
+      });
+    } catch (error) {
+      emit(LoginFailed());
+    }
+  }
+
   //for phone number
 
   //check phone number exist
@@ -92,7 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(PasswordLoading());
 
-      await AuthService.signInWithEmailPassword(
+      await AuthService.signUpWithEmailPassword(
               AuthService.userModel.email!, AuthService.userModel.password!)
           .then((value) async {
         if (value != null) {
@@ -133,6 +160,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _loginWithGoogle(
       LoginWithGoogle event, Emitter<AuthState> emit) async {
+    emit(LoginLoading());
     await AuthService.handleSignIn().then((value) {
       if (value == null) {
         //new user go to name and username screen

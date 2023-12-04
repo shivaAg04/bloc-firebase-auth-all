@@ -44,3 +44,10 @@ class PasswordSubmit extends AuthEvent {
   String password;
   PasswordSubmit(this.password);
 }
+
+// login with email and password
+class LoginWithEmailPassword extends AuthEvent {
+  String email;
+  String password;
+  LoginWithEmailPassword(this.email, this.password);
+}

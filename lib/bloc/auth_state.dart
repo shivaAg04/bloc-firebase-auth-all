@@ -86,3 +86,30 @@ class PasswordLoading extends AuthState {
 class AccountCreated extends AuthState {
   AccountCreated();
 }
+
+//////////login states
+
+//login loading
+class LoginLoading extends AuthState {
+  LoginLoading();
+}
+
+//login success
+class LoginSuccess extends AuthState {
+  LoginSuccess();
+}
+
+// login failed
+class LoginFailed extends AuthState {
+  LoginFailed();
+}
+
+// PasswordWrong
+class PasswordWrong extends AuthState {
+  PasswordWrong();
+}
+
+// UserNotFound
+class UserNotFound extends AuthState {
+  UserNotFound();
+}
