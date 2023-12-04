@@ -51,3 +51,15 @@ class LoginWithEmailPassword extends AuthEvent {
   String password;
   LoginWithEmailPassword(this.email, this.password);
 }
+// reset otp verify
+
+class ResetOtpVerify extends AuthEvent {
+  String otp;
+  ResetOtpVerify(this.otp);
+}
+
+// change password
+class ChangePassword extends AuthEvent {
+  String password;
+  ChangePassword(this.password);
+}

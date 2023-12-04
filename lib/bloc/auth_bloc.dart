@@ -16,6 +16,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyOtp>(_verifyOtp);
     on<PasswordSubmit>(_passwordSubmit);
     on<LoginWithEmailPassword>(_loginWithEmailPassword);
+    on<ResetOtpVerify>(_resetVerifyOtp);
+    on<ChangePassword>(_changePassword);
 
     add(CheckAuth());
   }
@@ -33,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             //login success
             emit(LoginSuccess());
           }).onError((error, stackTrace) {
-            emit(PasswordWrong());
+            emit(LoginFailed(error.toString()));
           });
         } else {
           //email not exist
@@ -41,7 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       });
     } catch (error) {
-      emit(LoginFailed());
+      emit(LoginFailed("error"));
     }
   }
 
@@ -103,11 +105,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(OtpVerifying());
       print("otpverifying");
-      PhoneAuthProvider.credential(
+      final cred = PhoneAuthProvider.credential(
           verificationId: AuthService.userModel.verificationId!,
           smsCode: event.otp);
+      AuthService.userModel.phoneAuthCredential = cred;
 
       emit(OtpVerified());
+    } catch (error) {
+      print('Error signing in with Google: $error');
+    }
+  }
+
+  // reset otp verify
+
+  Future<void> _resetVerifyOtp(
+      ResetOtpVerify event, Emitter<AuthState> emit) async {
+    try {
+      emit(OtpVerifying());
+      print("otpverifying");
+      final cred = PhoneAuthProvider.credential(
+          verificationId: AuthService.userModel.verificationId!,
+          smsCode: event.otp);
+      AuthService.userModel.phoneAuthCredential = cred;
+
+      emit(OtpVerified());
+    } catch (error) {
+      print('Error signing in with Google: $error');
+    }
+  }
+  //change password
+
+  Future<void> _changePassword(
+      ChangePassword event, Emitter<AuthState> emit) async {
+    try {
+      emit(PasswordLoading());
+      await AuthService.changePassword(event.password).then((value) {
+        if (value != null) {
+          emit(AccountCreated());
+        } else {}
+      }).catchError((error) {
+        print('Error: $error');
+      });
     } catch (error) {
       print('Error signing in with Google: $error');
     }

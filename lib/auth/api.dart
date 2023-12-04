@@ -18,12 +18,43 @@ class AuthService {
         email: emailAddress,
         password: password,
       );
+
       await FirebaseAuth.instance.currentUser
           ?.linkWithCredential(userModel.googleAuthCredential!);
+      await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(userModel.phoneAuthCredential!);
 
       print("////////////");
       print(credential.user!.email);
       return credential;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+        // Handle the case of a weak password
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+        // Handle the case of an existing email
+      }
+    } catch (e) {
+      print(e);
+      // General error handling
+    }
+    // Return null or handle as needed in your application logic
+    return null;
+  }
+
+  // change password
+  static Future<UserCredential?> changePassword(String password) async {
+    try {
+      final uc =
+          await _auth.signInWithCredential(userModel.phoneAuthCredential!);
+
+      await uc.user!
+          .reauthenticateWithCredential(userModel.phoneAuthCredential!)
+          .then((value) {
+        uc.user!.updatePassword(password);
+      });
+      return uc;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -51,11 +82,13 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
-        // Handle the case of a user not found.
+        throw Exception(e.code);
       } else if (e.code == 'invalid-credential') {
         print('Wrong password provided for that user.');
-        throw Exception("Error");
+        throw Exception(e.code);
         // Handle the case of a wrong password.
+      } else {
+        throw Exception(e.code);
       }
     } catch (e) {
       print(e.toString());

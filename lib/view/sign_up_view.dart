@@ -70,7 +70,7 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
                 ],
               ),
-              Align(
+              const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     "                                     #EarnKarBefikar",

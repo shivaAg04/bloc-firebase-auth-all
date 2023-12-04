@@ -101,7 +101,8 @@ class LoginSuccess extends AuthState {
 
 // login failed
 class LoginFailed extends AuthState {
-  LoginFailed();
+  String error;
+  LoginFailed(this.error);
 }
 
 // PasswordWrong

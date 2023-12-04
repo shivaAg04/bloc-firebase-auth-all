@@ -2,6 +2,7 @@ import 'package:firebase_auth_all_feature/bloc/auth.event.dart';
 import 'package:firebase_auth_all_feature/bloc/auth_bloc.dart';
 import 'package:firebase_auth_all_feature/bloc/auth_state.dart';
 import 'package:firebase_auth_all_feature/helper/dilogs.dart';
+import 'package:firebase_auth_all_feature/view/forgetPassword/forget_phone_view.dart';
 import 'package:firebase_auth_all_feature/view/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,6 +65,8 @@ class _SignInViewState extends State<SignInView> {
               listener: (context, state) {
                 if (state is PasswordWrong) {
                   Dialogs.showSnackBar(context, "Password is wrong");
+                } else if (state is LoginFailed) {
+                  Dialogs.showSnackBar(context, state.error);
                 } else if (state is UserNotFound) {
                   Dialogs.showSnackBar(context, "User not found");
                 } else if (state is LoginSuccess) {
@@ -95,6 +98,23 @@ class _SignInViewState extends State<SignInView> {
                   );
                 }
               },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Forget Password?'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => ForgetPhoneView(),
+                      ),
+                    );
+                  },
+                  child: Text('Click here'),
+                ),
+              ],
             ),
           ],
         ),

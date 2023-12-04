@@ -9,6 +9,7 @@ class UserModel {
   String? password;
   String? verificationId;
   AuthCredential? googleAuthCredential;
+  PhoneAuthCredential? phoneAuthCredential;
   UserModel(
       {this.firstName,
       this.lastName,
@@ -17,5 +18,6 @@ class UserModel {
       this.email,
       this.password,
       this.verificationId,
-      this.googleAuthCredential});
+      this.googleAuthCredential,
+      this.phoneAuthCredential});
 }
