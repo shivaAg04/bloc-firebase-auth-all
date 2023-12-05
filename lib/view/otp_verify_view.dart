@@ -22,48 +22,52 @@ class _OtpVerifyViewState extends State<OtpVerifyView> {
         appBar: AppBar(
           title: const Text('OtpVerifyView'),
         ),
-        body: Column(
-          children: [
-            Image.asset("assets/images/p.png"),
-            const SizedBox(height: 16.0),
-            const Welcome(),
-            const SizedBox(height: 26.0),
-            PinCodeTextField(
-              appContext: context,
-              length: 6,
-              controller: _otpController,
-              onChanged: (value) {},
-            ),
-            SizedBox(height: 16.0),
-            BlocConsumer<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is OtpVerified) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => PasswordView()));
-                }
-              },
-              builder: (context, state) {
-                if (state is OtpVerifying) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Image.asset("assets/images/p.png"),
+              const SizedBox(height: 16.0),
+              const Welcome(),
+              const SizedBox(height: 26.0),
+              PinCodeTextField(
+                appContext: context,
+                length: 6,
+                controller: _otpController,
+                onChanged: (value) {},
+              ),
+              SizedBox(height: 16.0),
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is OtpVerified) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PasswordView()));
+                  }
+                },
+                builder: (context, state) {
+                  if (state is OtpVerifying) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: MaterialButton(
-                    onPressed: () {
-                      context
-                          .read<AuthBloc>()
-                          .add(VerifyOtp(_otpController.text));
-                    },
-                    color: Colors.blue,
-                    child: Text("Verify"),
-                  ),
-                );
-              },
-            ),
-          ],
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: MaterialButton(
+                      onPressed: () {
+                        context
+                            .read<AuthBloc>()
+                            .add(VerifyOtp(_otpController.text));
+                      },
+                      color: Colors.blue,
+                      child: Text("Verify"),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ));
   }
 }

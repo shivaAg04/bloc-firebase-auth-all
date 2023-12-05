@@ -28,77 +28,86 @@ class _SignUpViewState extends State<SignUpView> {
         appBar: AppBar(
           title: Text('Google Sign-In with Firebase'),
         ),
-        body: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is OldUser) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const HomeView(),
-                ),
-              );
-            } else if (state is NewUser) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => UserNameView(),
-                ),
-              );
-            }
-          },
-          child: Column(
-            children: [
-              Image.asset("assets/images/p.png"),
-              const SizedBox(height: 16.0),
-              const Welcome(),
-              const SizedBox(height: 26.0),
-              SizedBox(
-                height: 50,
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: SignInButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+        body: SingleChildScrollView(
+          child: BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is Authenticated) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const HomeView(),
                   ),
-                  Buttons.google,
-                  text: "Sign up with Google",
-                  onPressed: () {
-                    context.read<AuthBloc>().add(LoginWithGoogle());
-                  },
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              const Text(
-                'OR',
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16.0),
-              const Text(
-                'Already have an account?',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16.0),
-              SizedBox(
-                  height: 45,
+                );
+              }
+              if (state is OldUser) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const HomeView(),
+                  ),
+                );
+              } else if (state is NewUser) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => UserNameView(),
+                  ),
+                );
+              }
+            },
+            child: Column(
+              children: [
+                Image.asset("assets/images/p.png"),
+                const SizedBox(height: 16.0),
+                const Welcome(),
+                const SizedBox(height: 26.0),
+                SizedBox(
+                  height: 50,
                   width: MediaQuery.of(context).size.width * 0.8,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInView()));
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                          color:
-                              Colors.purple), // Specify the border color here
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            8.0), // Adjust the border radius as needed
-                      ),
+                  child: SignInButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: const Text('Sign in'),
-                  )),
-            ],
+                    Buttons.google,
+                    text: "Sign up with Google",
+                    onPressed: () {
+                      context.read<AuthBloc>().add(LoginWithGoogle());
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'OR',
+                  style: TextStyle(fontSize: 18.0),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                const Text(
+                  'Already have an account?',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+                SizedBox(
+                    height: 45,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignInView()));
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                            color:
+                                Colors.purple), // Specify the border color here
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Adjust the border radius as needed
+                        ),
+                      ),
+                      child: const Text('Sign in'),
+                    )),
+              ],
+            ),
           ),
         ));
   }

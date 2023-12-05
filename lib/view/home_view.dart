@@ -1,4 +1,5 @@
 import 'package:firebase_auth_all_feature/auth/api.dart';
+import 'package:firebase_auth_all_feature/view/sign_up_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
                     await AuthService.signOut().then((value) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => const HomeView(),
+                          builder: (context) => const SignUpView(),
                         ),
                       );
                     });

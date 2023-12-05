@@ -24,85 +24,89 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       appBar: AppBar(
         title: Text('Password Change'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset("assets/images/p.png"),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              obscureText: !_passwordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset("assets/images/p.png"),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                obscureText: !_passwordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _passwordVisible = !_passwordVisible;
-                    });
-                  },
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _confirmPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
+              SizedBox(height: 16),
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            BlocConsumer<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AccountCreated) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeView(),
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is PasswordLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  return ElevatedButton(
-                    onPressed: () {
-                      // Validate passwords
-                      if (_passwordController.text.isEmpty ||
-                          _confirmPasswordController.text.isEmpty) {
-                        // Show error if any field is empty
-                        _showSnackBar(
-                            'Please enter both password and confirm password.');
-                      } else if (_passwordController.text !=
-                          _confirmPasswordController.text) {
-                        // Show error if passwords do not match
-                        _showSnackBar('Passwords do not match.');
-                      } else {
-                        // All ok. Submit the form
-                        AuthService.userModel.password =
-                            _passwordController.text;
-                        print(AuthService.userModel.password);
-                        print(AuthService.userModel.email);
-                        context
-                            .read<AuthBloc>()
-                            .add(ChangePassword(_passwordController.text));
-                      }
-                    },
-                    child: Text('Submit'),
-                  );
-                }
-              },
-            ),
-          ],
+              const SizedBox(height: 24),
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AccountCreated) {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const HomeView(),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is PasswordLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return ElevatedButton(
+                      onPressed: () {
+                        // Validate passwords
+                        if (_passwordController.text.isEmpty ||
+                            _confirmPasswordController.text.isEmpty) {
+                          // Show error if any field is empty
+                          _showSnackBar(
+                              'Please enter both password and confirm password.');
+                        } else if (_passwordController.text !=
+                            _confirmPasswordController.text) {
+                          // Show error if passwords do not match
+                          _showSnackBar('Passwords do not match.');
+                        } else {
+                          // All ok. Submit the form
+                          AuthService.userModel.password =
+                              _passwordController.text;
+                          print(AuthService.userModel.password);
+                          print(AuthService.userModel.email);
+                          context
+                              .read<AuthBloc>()
+                              .add(ChangePassword(_passwordController.text));
+                        }
+                      },
+                      child: Text('Submit'),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

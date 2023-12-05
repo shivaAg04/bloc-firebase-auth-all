@@ -53,6 +53,7 @@ class AuthService {
           .reauthenticateWithCredential(userModel.phoneAuthCredential!)
           .then((value) {
         uc.user!.updatePassword(password);
+        print("password change :$password");
       });
       return uc;
     } on FirebaseAuthException catch (e) {
@@ -192,13 +193,27 @@ class AuthService {
   }
 
   //////Sign out Function////////////////////
+  // static Future<void> signOut() async {
+  //   await _auth.signOut();
+  // }
+
+  // /// google signout
+  // static Future<void> googleSignOut() async {
+  //   await _googleSignIn.signOut();
+
+  //   await _auth.signOut();
+  // }
   static Future<void> signOut() async {
-    if (_googleSignIn.currentUser != null) {
-      await _googleSignIn.disconnect().then((value) async {
-        await _auth.signOut();
-      });
-    } else {
-      await _auth.signOut();
+    // Sign out of Firebase
+    await _auth.signOut();
+
+    // Check if the user signed in with Google
+
+    if (await _googleSignIn.isSignedIn()) {
+      print("google signout");
+      await _googleSignIn.signOut();
     }
+    // You may also want to check if the user signed in with email/password
+    // and perform the logout for that method as well.
   }
 }

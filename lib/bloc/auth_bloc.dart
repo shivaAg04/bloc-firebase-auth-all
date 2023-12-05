@@ -216,7 +216,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   //check user is log in or not
   Future<void> _checkAuth(CheckAuth event, Emitter<AuthState> emit) async {
     if (AuthService.currentUser != null) {
-      print('Signed in: ${AuthService.currentUser!.displayName}');
+      print('Signed in : ${AuthService.currentUser!.email}');
       emit(Authenticated());
     } else {
       print('Not signed in');
